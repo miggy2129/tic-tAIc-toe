@@ -28,9 +28,11 @@ $(document).ready(function(){
     }
     
     function computersTurn() {
+        console.log(turns, count)
         var taken = false;
         while (taken === false && count !== 5) {
             var computerMove = (Math.random() * 10).toFixed();
+            console.log(computerMove)
             var move = $("#" + computerMove).text();
             if (move === "#") {
                 $("#" + computerMove).text(computerTurn);

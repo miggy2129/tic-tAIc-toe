@@ -149,17 +149,6 @@ function main(){
     resetButton = document.getElementById("reset");
     resetButton.addEventListener('click', reset);
     setOnClick();
-    //var id = 8
-    //playerTurn(turn, id, count, turns, computerTurn)
-    //computersTurn(turns, count, computerTurn)
-    //document.write(turns)
-    //reset();
-    //console.log(Number(board.getAttribute("count")) + 11);
-    //document.write(getTurns());
-    // console.log(board.getAttribute("turn"));
-    // console.log(board.getAttribute("computerTurn"));
-    // console.log(board.id);
-    // console.log(board.getAttribute("hi"));
 }
 
 main()

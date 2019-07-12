@@ -1,20 +1,30 @@
-function click(tic, turn, count, turns, computerTurn){
-    var slot = tic.id;
-    playerTurn(turn, slot, count, turns, computerTurn);
+function getTurns(){
+    temp = document.getElementById("gameBoard").getAttribute("turns");
+    var turns = [];
+    for(i = 0; i < temp.length; i++){
+        if (i%2 === 0){
+            turns.push(temp[i])
+        }
+    }
+    return turns
 }
 
 function setOnClick(){
     var tics = document.getElementsByClassName("tic");
     for(i = 0; i < tics.length; i++){
-        tics[i].onclick = click;
+        tics[i].addEventListener('click', function(){
+            var slot = this.id;
+            var count = Number(document.getElementById("gameBoard").getAttribute("count"));
+            var turns = getTurns();
+            playerTurn(slot, count, turns);
+        }) 
     }
 }
 
 function computersTurn(turns, count, computerTurn){
     var taken = false;
     while (taken === false && count !== 5){
-        var computerMove = (Math.random() * 10).toFixed();
-        document.write(`${computerMove}<br />`)
+        var computerMove = (Math.random() * 8).toFixed();
         var move = document.getElementById(`${computerMove}`).innerHTML;
         if (move === "#") {
             document.getElementById(`${computerMove}`).innerHTML = computerTurn;
@@ -26,31 +36,41 @@ function computersTurn(turns, count, computerTurn){
 }
 
 function reset(){
-    turns = ["#","#","#","#","#","#","+","#"];
-    count = 0;
+    board = document.getElementById("gameBoard")
+    var turns = ["#","#","#","#","#","#","+","#"];
+    board.setAttribute("turns", turns);
+    board.setAttribute("count", 0);
     var tics = document.getElementsByClassName("tic");
     for(i = 0; i < tics.length; i++){
         tics[i].innerHTML = "#";
     }
-    gameOn = true;
+    board.setAttribute("gameOn", "true");
 }
 
-function playerTurn (turn, id, count, turns, computerTurn){
+function playerTurn (id, count, turns){
+    var turn = document.getElementById("gameBoard").getAttribute("turn");
+    var computerTurn = document.getElementById("gameBoard").getAttribute("computerTurn");
     var spotTaken = document.getElementById(id).innerHTML;
-    if (spotTaken ==="#"){
+    if (spotTaken === "#"){
         count++;
         turns[id] = turn;
+        document.getElementById("gameBoard").setAttribute("turns", turns);
         document.getElementById(id).innerHTML = turn;
-        //gameOn = winCondition(turns,turn);
+        gameOn = winCondition(turns, turn);
         if (gameOn === false){
             computerMove = computersTurn(turns, count, computerTurn);
             document.getElementById("message").innerHTML = `It's ${turn}'s turn.`;
-        //    gameOn = winCondition(turns, computerTurn);
+            turns[computerMove] = computerTurn;
+            document.getElementById("gameBoard").setAttribute("turns", turns);
+            gameOn = winCondition(turns, computerTurn);
         }
     }
 }
 
 function winCondition(trackMoves, currentMove) {
+    board = document.getElementById("gameBoard");
+    var gameOn;
+
     if (trackMoves[0] === currentMove && trackMoves[1] === currentMove && trackMoves[2] === currentMove) {
         gameOn = true;
         reset();
@@ -99,22 +119,22 @@ function winCondition(trackMoves, currentMove) {
 
 function main(){
     var turns = ["#","#","#","#","#","#","+","#"];
-    var computerTurn = "";
-    var turn = "";
-    var gameOn = false;
-    var count = 0;
+    var board = document.getElementById("gameBoard");
     var startTurn = prompt("Choose Your Move", "Type X or O").toUpperCase();
+
+    board.setAttribute("count", 0);
+    board.setAttribute("turns", turns);
 
     switch (startTurn){
         case "X":
-            computerTurn = "O";
-            turn = "X";
-            document.getElementById("message").innerHTML += `<p>Player ${turn} gets to start!</p>`;
+            board.setAttribute("computerTurn", "O");
+            board.setAttribute("turn", "X");
+            document.getElementById("message").innerHTML += `<p>Player X gets to start!</p>`;
             break;
         case "O":
-            computerTurn = "X";
-            turn = "O";
-            document.getElementById("message").innerHTML += `<p>Player ${turn} gets to start!</p>`;
+            board.setAttribute("computerTurn", "X");
+            board.setAttribute("turn", "O");
+            document.getElementById("message").innerHTML += `<p>Player O gets to start!</p>`;
             break;
         case null:
             alert("Sorry. Please type X or O");
@@ -126,12 +146,20 @@ function main(){
             break;
     }
 
-    setOnClick(turn, count, turns, computerTurn)
+    resetButton = document.getElementById("reset");
+    resetButton.addEventListener('click', reset);
+    setOnClick();
     //var id = 8
     //playerTurn(turn, id, count, turns, computerTurn)
     //computersTurn(turns, count, computerTurn)
-    document.write(turns)
+    //document.write(turns)
     //reset();
+    //console.log(Number(board.getAttribute("count")) + 11);
+    //document.write(getTurns());
+    // console.log(board.getAttribute("turn"));
+    // console.log(board.getAttribute("computerTurn"));
+    // console.log(board.id);
+    // console.log(board.getAttribute("hi"));
 }
 
 main()

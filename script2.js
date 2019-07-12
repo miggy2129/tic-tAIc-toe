@@ -37,7 +37,7 @@ function computersTurn(turns, count, computerTurn){
 
 function reset(){
     board = document.getElementById("gameBoard")
-    var turns = ["#","#","#","#","#","#","+","#"];
+    var turns = ["#","#","#","#","#","#","#","#", "#"];
     board.setAttribute("turns", turns);
     board.setAttribute("count", 0);
     var tics = document.getElementsByClassName("tic");
@@ -118,7 +118,7 @@ function winCondition(trackMoves, currentMove) {
 }
 
 function main(){
-    var turns = ["#","#","#","#","#","#","+","#"];
+    var turns = ["#","#","#","#","#","#","#","#", "#"];
     var board = document.getElementById("gameBoard");
     var startTurn = prompt("Choose Your Move", "Type X or O").toUpperCase();
 

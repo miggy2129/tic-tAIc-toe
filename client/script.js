@@ -21,20 +21,6 @@ function setOnClick(){
     }
 }
 
-function computersTurn(turns, count, computerTurn){
-    var taken = false;
-    while (taken === false && count !== 5){
-        var computerMove = (Math.random() * 8).toFixed();
-        var move = document.getElementById(`${computerMove}`).innerHTML;
-        if (move === "#") {
-            document.getElementById(`${computerMove}`).innerHTML = computerTurn;
-            taken = true;
-            turns[computerMove] = computerTurn;
-            return computerMove;
-        }
-    }
-}
-
 function reset(){
     board = document.getElementById("gameBoard")
     var turns = ["#","#","#","#","#","#","#","#", "#"];
@@ -47,7 +33,19 @@ function reset(){
     board.setAttribute("gameOn", "true");
 }
 
-function playerTurn (id, count, turns){
+async function computersTurn(turns, count, computerTurn){
+    var url = new URL("http://127.0.0.1:8000/easy");
+    var params = {state: turns, moveCount: count, compTurn: computerTurn};
+    url.search = new URLSearchParams(params);
+    fetchProp = {method: "GET", headers: {"Accept": "application/json"}};
+    var computerMove = Number(await fetch(url, fetchProp)
+    .then((resp) => resp.text())
+    .catch((error) => console.log(error)));
+    document.getElementById(`${computerMove}`).innerHTML = computerTurn;
+    turns[computerMove] = computerTurn;
+}
+
+async function playerTurn (id, count, turns){
     var turn = document.getElementById("gameBoard").getAttribute("turn");
     var computerTurn = document.getElementById("gameBoard").getAttribute("computerTurn");
     var spotTaken = document.getElementById(id).innerHTML;
@@ -58,9 +56,8 @@ function playerTurn (id, count, turns){
         document.getElementById(id).innerHTML = turn;
         gameOn = winCondition(turns, turn);
         if (gameOn === false){
-            computerMove = computersTurn(turns, count, computerTurn);
-            document.getElementById("message").innerHTML = `It's ${turn}'s turn.`;
-            turns[computerMove] = computerTurn;
+            await computersTurn(turns, count, computerTurn);
+            document.getElementById("message").innerHTML = `<p>You are player ${turn}.</p>`;
             document.getElementById("gameBoard").setAttribute("turns", turns);
             gameOn = winCondition(turns, computerTurn);
         }
@@ -129,12 +126,12 @@ function main(){
         case "X":
             board.setAttribute("computerTurn", "O");
             board.setAttribute("turn", "X");
-            document.getElementById("message").innerHTML += `<p>Player X gets to start!</p>`;
+            document.getElementById("message").innerHTML += `<p>You are player X.</p>`;
             break;
         case "O":
             board.setAttribute("computerTurn", "X");
             board.setAttribute("turn", "O");
-            document.getElementById("message").innerHTML += `<p>Player O gets to start!</p>`;
+            document.getElementById("message").innerHTML += `<p>You are player O.</p>`;
             break;
         case null:
             alert("Sorry. Please type X or O");

@@ -1,5 +1,4 @@
 *.pyc
 *.pyo
 __pycache__/
-test_script.js
 .DS_STORE
